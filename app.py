@@ -3,6 +3,7 @@ from flask import Flask, render_template, url_for, json, redirect, request
 import pandas as pd 
 import os
 from flask_dropzone import Dropzone
+from gensim.summarization import keywords
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -28,6 +29,17 @@ def upload():
         for key, f in request.files.items():
             if key.startswith('file'):
                 f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+                print(f)
+
+        with open('uploads/{}'.format(f.filename)) as f:
+         rawText = json.load(f)
+
+        jsonString = json.dumps(rawText)
+
+        print(keywords(jsonString))
+
+
+        
     return render_template('index.html')
 
 if __name__ == '__main__':

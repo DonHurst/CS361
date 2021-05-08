@@ -18,12 +18,14 @@
 import json
 from gensim.summarization import keywords
 
-with open('game.json') as f:
+def keywordGen(f):
+
+    # with open('game.json') as f:
     rawText = json.load(f)
 
-jsonString = json.dumps(rawText)
+    jsonString = json.dumps(rawText)
 
-print(keywords(jsonString))
+    print(keywords(jsonString))
 
 # stop_dir = "SmartStoplist.txt"
 # rake_object = RAKE.Rake(stop_dir)
