@@ -16,7 +16,9 @@ app.config.update(
     DROPZONE_TIMEOUT = 3*60*1000,
     DROPZONE_ALLOWED_FILE_CUSTOM = True,
     DROPZONE_ALLOWED_FILE_TYPE = '.json',
-    DROPZONE_MAX_FILES = 1
+    DROPZONE_MAX_FILES = 1,
+    DROPZONE_INVALID_FILE_TYPE = "INVALID FILE TYPE: Please upload a .json file",
+    DROPZONE_UPLOAD_ON_CLICK = True
 )
 
 dropzone = Dropzone(app)
@@ -29,16 +31,35 @@ def upload():
         for key, f in request.files.items():
             if key.startswith('file'):
                 f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-                print(f)
 
         with open('uploads/{}'.format(f.filename)) as f:
+
+        # returning the json object
          rawText = json.load(f)
 
+        # converting to JSON
         jsonString = json.dumps(rawText)
 
-        print(keywords(jsonString))
+        # Get list of the keyword strings from the JSON
+        extractedKeywords = keywords(jsonString)
 
+        # Extracting the lines as separated by \n
+        lines = extractedKeywords.split('\n')
 
+        # Instantiating our keyword dictionary
+        keywordDict = {
+            'keywords': []
+        }
+
+        # For each string in our keyword list
+        for x in lines:
+            
+            # append the string to the dictionary as a value in the list corresponding to keywords
+            keywordDict['keywords'].append(x)
+        
+        # Writing the keyword Dictionary to a json file
+        with open("keywords.json", 'w') as outfile:
+            json.dump(keywordDict, outfile)
         
     return render_template('index.html')
 
