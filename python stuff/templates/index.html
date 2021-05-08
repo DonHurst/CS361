@@ -40,16 +40,10 @@
             <div class="card-block">
 
                 <!-- Creating the Dropzone -->
-                {{ dropzone.create(action=url_for('home')) }}
+                {{ dropzone.create('/') }}
 
-                <!-- Setting up the configuration for the Dropzone -->
-                <!-- {{ dropzone.config() }} -->
-
-                <!-- <form action="#" class="dropzone dz-clickable" id="myDropzone" method="POST"> -->
-                    <!-- <div class="dz-default dz-message text-center"><span>Click here or drop files for upload</span></div>
-                </form> -->
                 <div class="text-center m-t-20">
-                    <button class="btn btn-primary" id="submit-all">Upload Now</button>
+                    <button class="btn btn-primary" id="upload">Upload Now</button>
                 </div>
             </div>
         </div>
@@ -59,15 +53,18 @@
 <!-- Dropzone JSON -->
 {{ dropzone.load_js() }}
 
+<!-- Setting up the configuration for the Dropzone -->
+{{ dropzone.config() }}
 
-<main role="main" class="container">
+
+<!-- <main role="main" class="container">
     <div class="row">
       <div class="col-md-8">
         {% block content %}{% endblock %}
       </div>
       </div>
     </div>
-  </main>
+  </main> -->
   
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
