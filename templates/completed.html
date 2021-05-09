@@ -14,8 +14,6 @@
     <title>Keyword Generator</title>
     {% endif %}
     
-    <!-- Dropzone CSS -->
-    {{ dropzone.load_css() }}
 
 </head>
 <body>
@@ -29,33 +27,25 @@
   </p>
 </div>
 
-
-<!-- Container for the Drop Zone -->
+<!--  Container for the download -->
 <div class="row d-flex justify-content-center mt-100">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h5>File Upload</h5>
+                <h5>File Download</h5>
             </div>
             <div class="card-block">
 
-                <!-- Creating the Dropzone -->
-                {{ dropzone.create('/') }}
-
                 <div class="text-center m-t-20">
-                    <button id="upload">Upload Now</button>
+                    <a href="{{ url_for('return_file') }}"><button id="download">Download Now</button></a>
+                    <!-- <a href="download/keywords.json" download><button id="download" download>Download Now</button></a> -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Dropzone JSON -->
-{{ dropzone.load_js() }}
 
-<!-- Setting up the configuration for the Dropzone -->
-{{ dropzone.config(custom_init='dz = this;document.getElementById("upload").addEventListener("click", function handler(e) {dz.processQueue();});',
-custom_options='autoProcessQueue: false, addRemoveLinks: true, parallelUploads: 20,') }}
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

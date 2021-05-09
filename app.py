@@ -1,6 +1,4 @@
-from flask import Flask, render_template, url_for, json, redirect, request
-# from forms import keywordForm
-import pandas as pd 
+from flask import Flask, render_template, url_for, json, redirect, request, send_file
 import os
 from flask_dropzone import Dropzone
 from gensim.summarization import keywords
@@ -9,7 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-# Configuring drop zone. Upload path is a dir called uploads, max file size 1gb, max timeout 3 mins, only allowing json files
+# Configuring drop zone
 app.config.update(
     UPLOADED_PATH = os.path.join(basedir,'uploads'),
     DROPZONE_MAX_FILE_SIZE = 1024,
@@ -18,7 +16,8 @@ app.config.update(
     DROPZONE_ALLOWED_FILE_TYPE = '.json',
     DROPZONE_MAX_FILES = 1,
     DROPZONE_INVALID_FILE_TYPE = "INVALID FILE TYPE: Please upload a .json file",
-    DROPZONE_UPLOAD_ON_CLICK = True
+    DROPZONE_UPLOAD_ON_CLICK = True,
+    DROPZONE_REDIRECT_VIEW='completed'
 )
 
 dropzone = Dropzone(app)
@@ -57,11 +56,33 @@ def upload():
             # append the string to the dictionary as a value in the list corresponding to keywords
             keywordDict['keywords'].append(x)
         
+        # Setting up the relative directory
+        rel_path = "download/keywords.json"
+
+        abs_path = os.path.join(basedir, rel_path)
+
         # Writing the keyword Dictionary to a json file
-        with open("keywords.json", 'w') as outfile:
+        with open(abs_path, 'w') as outfile:
             json.dump(keywordDict, outfile)
         
     return render_template('index.html')
+
+@app.route("/return_file", methods=['GET', 'POST'])
+def return_file():
+
+    return send_file('download/keywords.json',
+                     attachment_filename='keywords.json',
+                     as_attachment=True)
+    # return send_from_directory(directory=basedir, filename="keywords.json")
+
+    # print("HELLO")
+    # return send_file("keywords.json", as_attachment=True)
+
+@app.route("/completed", methods=['POST', 'GET'])
+def completed():
+
+    print("IM HERE")
+    return render_template('completed.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
