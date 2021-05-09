@@ -37,8 +37,11 @@
             <div class="card-block">
 
                 <div class="text-center m-t-20">
+                    <!-- Route for downloading the file -->
                     <a href="{{ url_for('return_file') }}"><button id="download">Download Now</button></a>
-                    <!-- <a href="download/keywords.json" download><button id="download" download>Download Now</button></a> -->
+
+                    <!-- Route for returning to the home screen -->
+                    <a href="{{ url_for('upload') }}"><button id="return_home">Generate Another</button></a>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, json, redirect, request, send_file
+from flask import Flask, render_template, url_for, json, redirect, request, send_file, flash
 import os
 from flask_dropzone import Dropzone
 from gensim.summarization import keywords
@@ -69,6 +69,7 @@ def upload():
 
 @app.route("/return_file", methods=['GET', 'POST'])
 def return_file():
+    
 
     return send_file('download/keywords.json',
                      attachment_filename='keywords.json',
@@ -81,7 +82,6 @@ def return_file():
 @app.route("/completed", methods=['POST', 'GET'])
 def completed():
 
-    print("IM HERE")
     return render_template('completed.html')
 
 if __name__ == '__main__':
