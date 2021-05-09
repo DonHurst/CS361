@@ -3,6 +3,7 @@ import os
 from flask_dropzone import Dropzone
 from gensim.summarization import keywords
 
+# Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
@@ -20,8 +21,10 @@ app.config.update(
     DROPZONE_REDIRECT_VIEW='completed'
 )
 
+# instantiating the drop zone
 dropzone = Dropzone(app)
 
+# Route for the home page
 @app.route("/", methods=['POST', 'GET'])
 def upload():
 
@@ -59,29 +62,30 @@ def upload():
         # Setting up the relative directory
         rel_path = "download/keywords.json"
 
+        # Setting the absolute path variable for the file save location
         abs_path = os.path.join(basedir, rel_path)
 
-        # Writing the keyword Dictionary to a json file
+        # Writing the keyword Dictionary to a json file in the download directory
         with open(abs_path, 'w') as outfile:
             json.dump(keywordDict, outfile)
         
+    # Render the template for the home page
     return render_template('index.html')
 
+# Route for the file download
 @app.route("/return_file", methods=['GET', 'POST'])
 def return_file():
     
-
+    # returning the keyword file as a download
     return send_file('download/keywords.json',
                      attachment_filename='keywords.json',
                      as_attachment=True)
-    # return send_from_directory(directory=basedir, filename="keywords.json")
 
-    # print("HELLO")
-    # return send_file("keywords.json", as_attachment=True)
-
+# Route for the page after keyword generation is completed
 @app.route("/completed", methods=['POST', 'GET'])
 def completed():
 
+    # Return the template for the completed page
     return render_template('completed.html')
 
 if __name__ == '__main__':
