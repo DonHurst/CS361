@@ -1,12 +1,15 @@
 from flask import Flask, render_template, url_for, json, redirect, request, send_file, flash
 import os
 from flask_dropzone import Dropzone
+from flask_restful import Resource, Api
 from gensim.summarization import keywords
 
 # Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+
+api = Api(app)
 
 # Configuring drop zone
 app.config.update(
@@ -87,6 +90,19 @@ def completed():
 
     # Return the template for the completed page
     return render_template('completed.html')
+
+# The code below represents the tentative code that will be used to
+# pass json through the API to teammates
+filePath = "download/keywords.json"
+with open(filePath) as f:
+    rawText = json.load(f)
+        
+class fileDownload(Resource):
+
+    def get(self):
+        return rawText
+
+api.add_resource(fileDownload, '/download')
 
 if __name__ == '__main__':
     app.run(debug=True)
