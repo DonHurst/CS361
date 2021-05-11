@@ -38,12 +38,12 @@
                 <h5>File Upload</h5>
             </div>
             <div class="card-block">
-
-                <!-- Creating the Dropzone -->
-                {{ dropzone.create('/') }}
-
-                <div class="text-center m-t-20">
-                    <button id="upload">Upload Now</button>
+                <form action="{{ url_for('completed') }}" enctype="multipart/form-data" method="post">
+                    {{ dropzone.create() }}
+                    <div class="text-center m-t-20">
+                    <input type="submit" id="upload" value="Upload Now">
+                    </div>
+                </form>
                 </div>
             </div>
         </div>
@@ -53,9 +53,10 @@
 <!-- Dropzone JSON -->
 {{ dropzone.load_js() }}
 
+
 <!-- Setting up the configuration for the Dropzone -->
 {{ dropzone.config(custom_init='dz = this;document.getElementById("upload").addEventListener("click", function handler(e) {dz.processQueue();});',
-custom_options='autoProcessQueue: false, addRemoveLinks: true, parallelUploads: 20,') }}
+custom_options='autoProcessQueue: false, addRemoveLinks: true, parallelUploads: 1,') }}
 
 <!-- Script tags for the bootstrap and Jquery for the page -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

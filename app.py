@@ -21,7 +21,10 @@ app.config.update(
     DROPZONE_MAX_FILES = 1,
     DROPZONE_INVALID_FILE_TYPE = "INVALID FILE TYPE: Please upload a .json file",
     DROPZONE_UPLOAD_ON_CLICK = True,
-    DROPZONE_REDIRECT_VIEW='completed'
+    DROPZONE_IN_FORM=True,
+    DROPZONE_UPLOAD_ACTION='handle_upload',  # URL or endpoint
+    DROPZONE_UPLOAD_BTN_ID='upload'
+    # DROPZONE_REDIRECT_VIEW='completed'
 )
 
 # instantiating the drop zone
@@ -29,18 +32,21 @@ dropzone = Dropzone(app)
 
 # Route for the home page
 @app.route("/", methods=['POST', 'GET'])
-def upload():
+def home():
 
-    # The flask dropzone code was borrowed from the documentation https://flask-dropzone.readthedocs.io/en/latest/basic.html
-    if request.method == 'POST':
-        for key, f in request.files.items():
-            if key.startswith('file'):
-                f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+        # Render the template for the home page
+    return render_template('index.html')
 
-        with open('uploads/{}'.format(f.filename)) as f:
+@app.route('/upload', methods=['POST'])
+def handle_upload():
+    for key, f in request.files.items():
+        if key.startswith('file'):
+            f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+
+    with open('uploads/{}'.format(f.filename)) as f:
 
         # returning the json object
-         rawText = json.load(f)
+        rawText = json.load(f)
 
         # converting to JSON
         jsonString = json.dumps(rawText)
@@ -71,12 +77,18 @@ def upload():
         # Writing the keyword Dictionary to a json file in the download directory
         with open(abs_path, 'w') as outfile:
             json.dump(keywordDict, outfile)
-        
-    # Render the template for the home page
-    return render_template('index.html')
+
+    return '', 204
+
+# Route for the page after keyword generation is completed
+@app.route("/completed", methods=['GET', 'POST'])
+def completed():
+                   
+    # Return the template for the completed page
+    return render_template('completed.html')
 
 # Route for the file download
-@app.route("/return_file", methods=['GET', 'POST'])
+@app.route("/return_file", methods=['GET'])
 def return_file():
     
     # returning the keyword file as a download
@@ -84,25 +96,21 @@ def return_file():
                      attachment_filename='keywords.json',
                      as_attachment=True)
 
-# Route for the page after keyword generation is completed
-@app.route("/completed", methods=['POST', 'GET'])
-def completed():
 
-    # Return the template for the completed page
-    return render_template('completed.html')
 
 # The code below represents the tentative code that will be used to
 # pass json through the API to teammates
-filePath = "download/keywords.json"
-with open(filePath) as f:
-    rawText = json.load(f)
+
+    # filePath = "download/keywords.json"
+    # with open(filePath) as f:
+    #     rawText = json.load(f)
         
-class fileDownload(Resource):
+    # class fileDownload(Resource):
 
-    def get(self):
-        return rawText
+    #     def get(self):
+    #         return rawText
 
-api.add_resource(fileDownload, '/download')
+    # api.add_resource(fileDownload, '/api')
 
 if __name__ == '__main__':
     app.run(debug=True)
