@@ -1,14 +1,16 @@
 from flask import Flask, render_template, url_for, json, redirect, request, send_file, flash
 import os
 from flask_dropzone import Dropzone
-from flask_restful import Resource, Api
-from gensim.summarization import keywords
+from flask_restful import Resource, Api, reqparse, abort
+from keywordGenerator import generateKeywords_from_file, generateKeywords_from_api
 
 # Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# instantiating the app
 app = Flask(__name__)
 
+# Instantiating the API
 api = Api(app)
 
 # Configuring drop zone
@@ -24,11 +26,47 @@ app.config.update(
     DROPZONE_IN_FORM=True,
     DROPZONE_UPLOAD_ACTION='handle_upload',  # URL or endpoint
     DROPZONE_UPLOAD_BTN_ID='upload'
-    # DROPZONE_REDIRECT_VIEW='completed'
 )
 
 # instantiating the drop zone
 dropzone = Dropzone(app)
+
+# Keyword API stuff - put arguments
+keyword_put_args = reqparse.RequestParser()
+keyword_put_args.add_argument("id", type=int, help="Keyword_id_number", required=True)
+keyword_put_args.add_argument("title", type=str, help="Title of game", required=True)
+keyword_put_args.add_argument("jsonString", type=str, help="Scraped text", required=True)
+
+# Dictionary containing all of the passed-in information
+keywords = {}
+
+# Dictionary containing all of the keyword values
+keyword_list = {}
+
+def abort_if_no_keyword_id(keyword_id):
+    if keyword_id not in keywords:
+        abort(404, message="Keyword Id is not valid...")
+
+# The code below represents the tentative code that will be used to
+# pass json through the API to teammates
+# ------------------------------------------------------------------------
+
+class Keyword(Resource):
+    def get(self, keyword_id):
+        abort_if_no_keyword_id(keyword_id)
+        return keywords[keyword_id]
+
+    def put(self, keyword_id):
+        args = keyword_put_args.parse_args()
+        print(args["id"])
+
+        # Adding the passed information to the list of keywords
+        keywords[keyword_id] = args
+        print(keywords)
+        return keywords[keyword_id], 201
+
+# ------------------------------------------------------------------------
+
 
 # Route for the home page
 @app.route("/", methods=['POST', 'GET'])
@@ -43,40 +81,8 @@ def handle_upload():
         if key.startswith('file'):
             f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
 
-    with open('uploads/{}'.format(f.filename)) as f:
-
-        # returning the json object
-        rawText = json.load(f)
-
-        # converting to JSON
-        jsonString = json.dumps(rawText)
-
-        # Get list of the keyword strings from the JSON
-        extractedKeywords = keywords(jsonString)
-
-        # Extracting the lines as separated by \n
-        lines = extractedKeywords.split('\n')
-
-        # Instantiating our keyword dictionary
-        keywordDict = {
-            'keywords': []
-        }
-
-        # For each string in our keyword list
-        for x in lines:
-            
-            # append the string to the dictionary as a value in the list corresponding to keywords
-            keywordDict['keywords'].append(x)
-        
-        # Setting up the relative directory
-        rel_path = "download/keywords.json"
-
-        # Setting the absolute path variable for the file save location
-        abs_path = os.path.join(basedir, rel_path)
-
-        # Writing the keyword Dictionary to a json file in the download directory
-        with open(abs_path, 'w') as outfile:
-            json.dump(keywordDict, outfile)
+    # Generate the keywords and save to the downloads file
+    generateKeywords_from_file('uploads/{}'.format(f.filename))
 
     return '', 204
 
@@ -97,20 +103,7 @@ def return_file():
                      as_attachment=True)
 
 
-
-# The code below represents the tentative code that will be used to
-# pass json through the API to teammates
-
-    # filePath = "download/keywords.json"
-    # with open(filePath) as f:
-    #     rawText = json.load(f)
-        
-    # class fileDownload(Resource):
-
-    #     def get(self):
-    #         return rawText
-
-    # api.add_resource(fileDownload, '/api')
+api.add_resource(Keyword, "/keyword/<int:keyword_id>")
 
 if __name__ == '__main__':
     app.run(debug=True)
