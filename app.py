@@ -41,8 +41,9 @@ keyword_put_args.add_argument("jsonString", type=str, help="Scraped text", requi
 keywords = {}
 
 # Dictionary containing all of the keyword values
-keyword_list = {}
+keyword_list = {0: {'id': 0, 'title': 'pokemon Snap', 'jsonString': ["gaming", "pok", "video game", "console games", "editor", "editors", "calling", "nintendo", "ign", "sequel called", "commented", "commenting", "commentators", "released", "release", "snap", "author", "players", "player", "videos", "including", "includes", "included", "include", "series", "titles", "new", "news", "featuring", "featured", "feature", "pictures", "picture", "best", "title development", "time", "times", "like", "better", "version features", "praised", "praising", "originally", "developer", "life", "magazine", "taking", "scoring", "scores", "takes photographs", "photographer", "photographing", "photographic", "later", "retronauts", "posted", "post", "gameplay mechanics developed", "appearance", "appearing", "states", "stating", "stated", "accessories", "accessory", "earthbound", "photos", "photo", "initially", "initial", "designers", "design", "adventure", "adventures", "original generation", "todd", "end", "ending", "printed", "print", "blockbuster", "levels", "level", "fun", "wii", "oak", "fairy", "good", "promoted", "promotions", "storage", "regions", "gran", "clank", "elements ended", "japan", "little", "special", "briefly appeared", "sold", "book", "pikachu", "different", "songs", "card", "cards", "wired", "steel", "prowess citing", "dead", "general", "generally", "generations", "justin", "positive reception", "similar", "person", "personal", "received", "fantasy", "mark", "world", "cave", "entertaining", "amphibious", "freak", "united", "units", "rainbow", "having", "podcast", "quality", "feel", "feeling", "based", "virtual", "mechanic", "professor", "japanese", "viii", "discussed", "training", "diversion", "pokemon", "river"]}}
 
+# function to abort if no id is passed
 def abort_if_no_keyword_id(keyword_id):
     if keyword_id not in keywords:
         abort(404, message="Keyword Id is not valid...")
@@ -53,8 +54,9 @@ def abort_if_no_keyword_id(keyword_id):
 
 class Keyword(Resource):
     def get(self, keyword_id):
-        abort_if_no_keyword_id(keyword_id)
-        return keywords[keyword_id]
+        # abort_if_no_keyword_id(keyword_id)
+        # print(keyword_id)
+        return keyword_list[keyword_id]
 
     def put(self, keyword_id):
         args = keyword_put_args.parse_args()
