@@ -33,15 +33,14 @@ dropzone = Dropzone(app)
 
 # Keyword API stuff - put arguments
 keyword_put_args = reqparse.RequestParser()
-keyword_put_args.add_argument("id", type=int, help="Keyword_id_number", required=True)
 keyword_put_args.add_argument("title", type=str, help="Title of game", required=True)
-keyword_put_args.add_argument("jsonString", type=str, help="Scraped text", required=True)
+keyword_put_args.add_argument("keyword_list", type=str, help="Scraped text", required=True)
 
 # Dictionary containing all of the passed-in information
 keywords = {}
 
 # Dictionary containing all of the keyword values
-keyword_list = {0: {'id': 0, 'title': 'pokemon Snap', 'jsonString': ["gaming", "pok", "video game", "console games", "editor", "editors", "calling", "nintendo", "ign", "sequel called", "commented", "commenting", "commentators", "released", "release", "snap", "author", "players", "player", "videos", "including", "includes", "included", "include", "series", "titles", "new", "news", "featuring", "featured", "feature", "pictures", "picture", "best", "title development", "time", "times", "like", "better", "version features", "praised", "praising", "originally", "developer", "life", "magazine", "taking", "scoring", "scores", "takes photographs", "photographer", "photographing", "photographic", "later", "retronauts", "posted", "post", "gameplay mechanics developed", "appearance", "appearing", "states", "stating", "stated", "accessories", "accessory", "earthbound", "photos", "photo", "initially", "initial", "designers", "design", "adventure", "adventures", "original generation", "todd", "end", "ending", "printed", "print", "blockbuster", "levels", "level", "fun", "wii", "oak", "fairy", "good", "promoted", "promotions", "storage", "regions", "gran", "clank", "elements ended", "japan", "little", "special", "briefly appeared", "sold", "book", "pikachu", "different", "songs", "card", "cards", "wired", "steel", "prowess citing", "dead", "general", "generally", "generations", "justin", "positive reception", "similar", "person", "personal", "received", "fantasy", "mark", "world", "cave", "entertaining", "amphibious", "freak", "united", "units", "rainbow", "having", "podcast", "quality", "feel", "feeling", "based", "virtual", "mechanic", "professor", "japanese", "viii", "discussed", "training", "diversion", "pokemon", "river"]}}
+keyword_list = {0: {'title': 'pokemon Snap', 'keyword_list': ["gaming", "pok", "video game", "console games", "editor", "editors", "calling", "nintendo", "ign", "sequel called", "commented", "commenting", "commentators", "released", "release", "snap", "author", "players", "player", "videos", "including", "includes", "included", "include", "series", "titles", "new", "news", "featuring", "featured", "feature", "pictures", "picture", "best", "title development", "time", "times", "like", "better", "version features", "praised", "praising", "originally", "developer", "life", "magazine", "taking", "scoring", "scores", "takes photographs", "photographer", "photographing", "photographic", "later", "retronauts", "posted", "post", "gameplay mechanics developed", "appearance", "appearing", "states", "stating", "stated", "accessories", "accessory", "earthbound", "photos", "photo", "initially", "initial", "designers", "design", "adventure", "adventures", "original generation", "todd", "end", "ending", "printed", "print", "blockbuster", "levels", "level", "fun", "wii", "oak", "fairy", "good", "promoted", "promotions", "storage", "regions", "gran", "clank", "elements ended", "japan", "little", "special", "briefly appeared", "sold", "book", "pikachu", "different", "songs", "card", "cards", "wired", "steel", "prowess citing", "dead", "general", "generally", "generations", "justin", "positive reception", "similar", "person", "personal", "received", "fantasy", "mark", "world", "cave", "entertaining", "amphibious", "freak", "united", "units", "rainbow", "having", "podcast", "quality", "feel", "feeling", "based", "virtual", "mechanic", "professor", "japanese", "viii", "discussed", "training", "diversion", "pokemon", "river"]}}
 
 # function to abort if no id is passed
 def abort_if_no_keyword_id(keyword_id):
@@ -53,19 +52,20 @@ def abort_if_no_keyword_id(keyword_id):
 # ------------------------------------------------------------------------
 
 class Keyword(Resource):
-    def get(self, keyword_id):
+    def get(self):
         # abort_if_no_keyword_id(keyword_id)
         # print(keyword_id)
-        return keyword_list[keyword_id]
+        json_obj = json.dumps(keyword_list[0])
+        print(json_obj)
+        return json_obj
 
-    def put(self, keyword_id):
+    def put(self):
         args = keyword_put_args.parse_args()
-        print(args["id"])
 
-        # Adding the passed information to the list of keywords
-        keywords[keyword_id] = args
+        # Overwriting existing data
+        keyword_list[0] = args
         print(keywords)
-        return keywords[keyword_id], 201
+        return keyword_list[0], 201
 
 # ------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ def return_file():
                      as_attachment=True)
 
 
-api.add_resource(Keyword, "/keyword/<int:keyword_id>")
+api.add_resource(Keyword, "/keyword")
 
 if __name__ == '__main__':
     app.run(debug=True)
