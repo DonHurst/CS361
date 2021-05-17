@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, json, redirect, request, send
 from gensim.summarization import keywords
 import os
 
+
 # Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -42,5 +43,20 @@ def generateKeywords_from_file(FILE_PATH):
 	    with open(abs_path, 'w') as outfile:
 	        json.dump(keywordDict, outfile)
 
-def generateKeywords_from_api():
-	pass
+def generateKeywords_from_api(jsonString):
+	extractedKeywords = keywords(jsonString)
+
+	lines = extractedKeywords.split('\n')
+
+	# Instantiating our keyword dictionary
+	keywordDict = {
+	    'keywords': []
+	}
+
+	# For each string in our keyword list
+	for x in lines:
+
+		# append the string to the dictionary as a value in the list corresponding to keywords
+		keywordDict['keywords'].append(x)
+
+	return json.dumps(keywordDict)
