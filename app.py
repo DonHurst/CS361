@@ -1,8 +1,10 @@
 from flask import Flask, render_template, url_for, json, redirect, request, send_file, flash
 import os
+import requests
 from flask_dropzone import Dropzone
 from flask_restful import Resource, Api, reqparse, abort
 from keywordGenerator import generateKeywords_from_file, generateKeywords_from_api
+
 
 # Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -31,21 +33,13 @@ app.config.update(
 # instantiating the drop zone
 dropzone = Dropzone(app)
 
-# Keyword API stuff - put arguments
-keyword_put_args = reqparse.RequestParser()
-keyword_put_args.add_argument("title", type=str, help="Title of game", required=True)
-keyword_put_args.add_argument("keyword_list", type=str, help="Scraped text", required=True)
-
 # Dictionary containing all of the passed-in information
 keywords = {}
 
 # Dictionary containing all of the keyword values
 keyword_list = {0: {'title': 'pokemon Snap', 'keyword_list': ["gaming", "pok", "video game", "console games", "editor", "editors", "calling", "nintendo", "ign", "sequel called", "commented", "commenting", "commentators", "released", "release", "snap", "author", "players", "player", "videos", "including", "includes", "included", "include", "series", "titles", "new", "news", "featuring", "featured", "feature", "pictures", "picture", "best", "title development", "time", "times", "like", "better", "version features", "praised", "praising", "originally", "developer", "life", "magazine", "taking", "scoring", "scores", "takes photographs", "photographer", "photographing", "photographic", "later", "retronauts", "posted", "post", "gameplay mechanics developed", "appearance", "appearing", "states", "stating", "stated", "accessories", "accessory", "earthbound", "photos", "photo", "initially", "initial", "designers", "design", "adventure", "adventures", "original generation", "todd", "end", "ending", "printed", "print", "blockbuster", "levels", "level", "fun", "wii", "oak", "fairy", "good", "promoted", "promotions", "storage", "regions", "gran", "clank", "elements ended", "japan", "little", "special", "briefly appeared", "sold", "book", "pikachu", "different", "songs", "card", "cards", "wired", "steel", "prowess citing", "dead", "general", "generally", "generations", "justin", "positive reception", "similar", "person", "personal", "received", "fantasy", "mark", "world", "cave", "entertaining", "amphibious", "freak", "united", "units", "rainbow", "having", "podcast", "quality", "feel", "feeling", "based", "virtual", "mechanic", "professor", "japanese", "viii", "discussed", "training", "diversion", "pokemon", "river"]}}
 
-# function to abort if no id is passed
-def abort_if_no_keyword_id(keyword_id):
-    if keyword_id not in keywords:
-        abort(404, message="Keyword Id is not valid...")
+# keyword_list = {}
 
 # The code below represents the tentative code that will be used to
 # pass json through the API to teammates
@@ -53,19 +47,13 @@ def abort_if_no_keyword_id(keyword_id):
 
 class Keyword(Resource):
     def get(self):
-        # abort_if_no_keyword_id(keyword_id)
-        # print(keyword_id)
+
+        ###
+        # GET VALERIES DATA GOES HERE
+        ###
         json_obj = json.dumps(keyword_list[0])
         print(json_obj)
         return json_obj
-
-    def put(self):
-        args = keyword_put_args.parse_args()
-
-        # Overwriting existing data
-        keyword_list[0] = args
-        print(keywords)
-        return keyword_list[0], 201
 
 # ------------------------------------------------------------------------
 
