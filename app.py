@@ -52,19 +52,19 @@ class Keyword(Resource):
         # GET VALERIES DATA as JSON
         val_url = "http://valchin.com/sendjson2021"
         response = requests.get(val_url)
-
         
+        # Use response.json to change to a dict
         tempDict = response.json()
+
+        # Convert to a json string
         jsonString = json.dumps(tempDict)
+
+        # Call the helper function with the json String
         keywordList = generateKeywords_from_api(jsonString)
-        # # keyword_list[0] = keywordList
         
+        # return the list of keywords
+        return keywordList
 
-        json_obj = json.dumps(keywordList)
-        # # print(type(json_obj))
-        return json_obj
-
-        # return
 
 # ------------------------------------------------------------------------
 
