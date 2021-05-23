@@ -4,10 +4,10 @@ from gensim.summarization import keywords
 import os
 from keywordGenerator import generateKeywords_from_file, generateKeywords_from_api
 
-# BASE = "https://www.don-hurst.com/keyword"
+BASE = "https://www.don-hurst.com/keyword"
 # BASE = "http://valchin.com/sendjson2021"
 # BASE = "http://flip3.engr.oregonstate.edu:8993/"
-BASE = "http://127.0.0.1:5000/keyword"
+# BASE = "http://127.0.0.1:5000/keyword"
 
 # data = {"title": "A TEST", "keyword_list": ["Hello", "Goodbye", "great success"]}
 # 		{"title": "Hello2", "jsonString": "Goodbye2"},
@@ -25,9 +25,7 @@ keyword_list = {}
 
 response=requests.get(BASE)
 # response=requests.get(BASE + "keyword")
-print(response)
 print(response.json())
-print(type(response.json()))
 # jsonString = response.json()
 # print(jsonString)
 # keywordsJson = generateKeywords_from_api(jsonString)

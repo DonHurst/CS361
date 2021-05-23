@@ -33,14 +33,6 @@ app.config.update(
 # instantiating the drop zone
 dropzone = Dropzone(app)
 
-# Dictionary containing all of the passed-in information
-keywords = {}
-
-# Dictionary containing all of the keyword values
-keyword_list = {}
-
-# keyword_list = {}
-
 # The code below represents the tentative code that will be used to
 # pass json through the API to teammates
 # ------------------------------------------------------------------------
