@@ -5,7 +5,6 @@ from flask_dropzone import Dropzone
 from flask_restful import Resource, Api, reqparse, abort
 from keywordGenerator import generateKeywords_from_file, generateKeywords_from_api
 
-
 # Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -30,17 +29,51 @@ app.config.update(
     DROPZONE_UPLOAD_BTN_ID='upload'
 )
 
+# Keyword Post Arguments
+# headers = {'Content-type': 'application/json'}
+# keyword_post_args = reqparse.RequestParser()
+# keyword_post_args.add_argument('rawText', type=str, required=True, headers=headers)
+
 # instantiating the drop zone
 dropzone = Dropzone(app)
 
-# The code below represents the tentative code that will be used to
-# pass json through the API to teammates
-# ------------------------------------------------------------------------
+put_keywordList = {}
 
+# --------------------------------------------------------------------------
+# The code below is for users to pass data to the app in a post request and 
+# get the keyword list generated from their text
+# --------------------------------------------------------------------------
+class keywordUpload(Resource):
+    def get(self):
+
+        # If the keyword list isn't empty, return it
+        if put_keywordList:
+            return put_keywordList["keywords"]
+        else:
+            return "There are no values in the keyword list!"
+
+    def post(self):
+
+        # get the json data and store in a temp dict
+        tempDict = request.get_json(force=True)
+
+        # # convert the dict to a json string
+        jsonString = json.dumps(tempDict)
+
+        # indicate we want to overwrite the global list of keywords
+        global put_keywordList
+
+        # call helper function with the json string
+        put_keywordList = json.loads(generateKeywords_from_api(jsonString))
+
+        return '', 202
+
+# ------------------------------------------------------------------------
+# The code below is used to pass json through the API to teammates
+# ------------------------------------------------------------------------
 class Keyword(Resource):
     def get(self):
 
-        ###
         # GET VALERIES DATA as JSON
         val_url = "http://valchin.com/sendjson2021"
         response = requests.get(val_url)
@@ -53,19 +86,16 @@ class Keyword(Resource):
 
         # Call the helper function with the json String
         keywordList = generateKeywords_from_api(jsonString)
-        
-        # return the list of keywords
+
         return keywordList
 
 
 # ------------------------------------------------------------------------
-
-
-# Route for the home page
+# The code below is the routing for the web pages
+# ------------------------------------------------------------------------
 @app.route("/", methods=['POST', 'GET'])
 def home():
 
-        # Render the template for the home page
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
@@ -79,24 +109,20 @@ def handle_upload():
 
     return '', 204
 
-# Route for the page after keyword generation is completed
 @app.route("/completed", methods=['GET', 'POST'])
 def completed():
                    
-    # Return the template for the completed page
     return render_template('completed.html')
 
-# Route for the file download
 @app.route("/return_file", methods=['GET'])
 def return_file():
     
-    # returning the keyword file as a download
     return send_file('download/keywords.json',
                      attachment_filename='keywords.json',
                      as_attachment=True)
 
-
 api.add_resource(Keyword, "/keyword")
+api.add_resource(keywordUpload, "/keywordUpload")
 
 if __name__ == '__main__':
     app.run(debug=True)

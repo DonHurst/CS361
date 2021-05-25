@@ -4,10 +4,13 @@ from gensim.summarization import keywords
 import os
 from keywordGenerator import generateKeywords_from_file, generateKeywords_from_api
 
-BASE = "https://www.don-hurst.com/keyword"
-# BASE = "http://valchin.com/sendjson2021"
+# BASE = "https://www.don-hurst.com/keyword"
+valdata = "http://valchin.com/sendjson2021"
 # BASE = "http://flip3.engr.oregonstate.edu:8993/"
-# BASE = "http://127.0.0.1:5000/keyword"
+BASE = "http://127.0.0.1:5000/keywordUpload"
+
+tempDict = requests.get(valdata).json()
+data = json.dumps(tempDict)
 
 # data = {"title": "A TEST", "keyword_list": ["Hello", "Goodbye", "great success"]}
 # 		{"title": "Hello2", "jsonString": "Goodbye2"},
@@ -20,12 +23,20 @@ BASE = "https://www.don-hurst.com/keyword"
 # response = requests.put(BASE + "keyword/1" + str[i], data[i])
 # print(response)
 
-keyword_list = {}
 
+
+print("before")
+response=requests.get(BASE)
+print(response.json())
+
+response=requests.post(BASE, data)
+print("after")
+print(response)
 
 response=requests.get(BASE)
-# response=requests.get(BASE + "keyword")
 print(response.json())
+# response=requests.get(BASE + "keyword")
+# print(response.json())
 # jsonString = response.json()
 # print(jsonString)
 # keywordsJson = generateKeywords_from_api(jsonString)
