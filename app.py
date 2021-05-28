@@ -29,11 +29,6 @@ app.config.update(
     DROPZONE_UPLOAD_BTN_ID='upload'
 )
 
-# Keyword Post Arguments
-# headers = {'Content-type': 'application/json'}
-# keyword_post_args = reqparse.RequestParser()
-# keyword_post_args.add_argument('rawText', type=str, required=True, headers=headers)
-
 # instantiating the drop zone
 dropzone = Dropzone(app)
 
@@ -60,7 +55,7 @@ class keywordUpload(Resource):
         # # convert the dict to a json string
         jsonString = json.dumps(tempDict)
 
-        # indicate we want to overwrite the global list of keywords
+        # Use global variable
         global put_keywordList
 
         # call helper function with the json string

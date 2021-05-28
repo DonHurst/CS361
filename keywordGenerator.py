@@ -6,42 +6,50 @@ import os
 # Variable for the root directory of the project 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+def openFile(FILE_PATH):
+
+	with open(FILE_PATH) as f:
+		# returning the json object
+		rawText = json.load(f)
+
+		# converting to JSON
+		jsonString = json.dumps(rawText)
+
+	return jsonString
+
+
 def generateKeywords_from_file(FILE_PATH):
 
-    with open(FILE_PATH) as f:
+    # Open the File
+	jsonString = openFile(FILE_PATH)
 
-	    # returning the json object
-	    rawText = json.load(f)
+	# Get list of the keyword strings from the JSON
+	extractedKeywords = keywords(jsonString)
 
-	    # converting to JSON
-	    jsonString = json.dumps(rawText)
+	# Extracting the lines as separated by \n
+	lines = extractedKeywords.split('\n')
 
-	    # Get list of the keyword strings from the JSON
-	    extractedKeywords = keywords(jsonString)
+	# Instantiating our keyword dictionary
+	keywordDict = {
+		'keywords': []
+	}
 
-	    # Extracting the lines as separated by \n
-	    lines = extractedKeywords.split('\n')
+	# For each string in our keyword list
+	for string in lines:
+		
+		# append the string to the dictionary as a value in the list corresponding to keywords
+		keywordDict['keywords'].append(string)
+	
+	# Setting up the relative directory
+	rel_path = "download/keywords.json"
 
-	    # Instantiating our keyword dictionary
-	    keywordDict = {
-	        'keywords': []
-	    }
+	# Setting the absolute path variable for the file save location
+	abs_path = os.path.join(basedir, rel_path)
 
-	    # For each string in our keyword list
-	    for x in lines:
-	        
-	        # append the string to the dictionary as a value in the list corresponding to keywords
-	        keywordDict['keywords'].append(x)
-	    
-	    # Setting up the relative directory
-	    rel_path = "download/keywords.json"
+	# Writing the keyword Dictionary to a json file in the download directory
+	with open(abs_path, 'w') as outfile:
+		json.dump(keywordDict, outfile)
 
-	    # Setting the absolute path variable for the file save location
-	    abs_path = os.path.join(basedir, rel_path)
-
-	    # Writing the keyword Dictionary to a json file in the download directory
-	    with open(abs_path, 'w') as outfile:
-	        json.dump(keywordDict, outfile)
 
 def generateKeywords_from_api(jsonString):
 	extractedKeywords = keywords(jsonString)
@@ -54,9 +62,9 @@ def generateKeywords_from_api(jsonString):
 	}
 
 	# For each string in our keyword list
-	for x in lines:
+	for string in lines:
 
 		# append the string to the dictionary as a value in the list corresponding to keywords
-		keywordDict['keywords'].append(x)
+		keywordDict['keywords'].append(string)
 
 	return json.dumps(keywordDict)
