@@ -7,7 +7,7 @@ from keywordGenerator import generateKeywords_from_file, generateKeywords_from_a
 # BASE = "https://www.don-hurst.com/keyword"
 valdata = "http://valchin.com/sendjson2021"
 # BASE = "http://flip3.engr.oregonstate.edu:8993/"
-BASE = "http://127.0.0.1:5000/keywordUpload"
+BASE = "https://www.don-hurst.com/keywordUpload"
 
 tempDict = requests.get(valdata).json()
 data = json.dumps(tempDict)
@@ -27,14 +27,10 @@ data = json.dumps(tempDict)
 
 print("before")
 response=requests.get(BASE)
-print(response.json())
 
 response=requests.post(BASE, data)
-print("after")
-print(response)
 
 response=requests.get(BASE)
-print(response.json())
 # response=requests.get(BASE + "keyword")
 # print(response.json())
 # jsonString = response.json()
